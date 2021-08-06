@@ -21,15 +21,18 @@ Useage:
 #define ARRAY_STATS_H_
 
 
-#include <Arduino.h> // capital A so it is error prone on case-sensitive filesystems
+#define LIBRARY_VERSION 1.1.0
+
+//#include <Arduino.h> // capital A so it is error prone on case-sensitive filesystems
+
 
 
 // struct providing results
-struct arrStat
+struct ArrStatsResult
 {
     float min;
     float max;
-    float mean;
+    float avg;
     int incCount;
     int decCount;
     int incSeqCount;
@@ -44,16 +47,19 @@ struct arrStat
 class ArrayStats {
     public:
       ArrayStats();
-      float computeMin(float v[], uint8_t sz);
-      float computeMax(float v[], uint8_t sz);
-      float computeAvg(float v[], uint8_t sz);
-      void computeStats(float arr[], int sz, struct arrStat *result);
-      void print(float arr[], uint8_t sz, struct arrStat result);
-      void printArr(float arr[], uint8_t sz);
-      void printStats(struct arrStat result);
+      ArrayStats(unsigned long s);
+      void add(float f);
+      float min();
+      float max();
+      float avg();
+      void stats(struct ArrStatsResult *result);
+      void printArray();
+      //void printStats(struct arrStat result);
 
     protected:
-
+      unsigned long idx = 0;  // array pointer
+      unsigned long sz;      // array size
+      float * v;   // array data
 };
 
 

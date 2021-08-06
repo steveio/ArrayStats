@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -6,10 +7,25 @@
 #include "ArrayStats.h"
 
 
-ArrayStats::ArrayStats () {}
+ArrayStats::ArrayStats() {}
+
+ArrayStats::ArrayStats(unsigned long s)
+{
+	sz = s;
+	v = new float[s];
+}
+
+void ArrayStats::add(float f)
+{
+	v[idx++] = f;
+	if (idx == sz)
+	{
+		idx = 0;
+	}
+}
 
 
-float ArrayStats::computeMin(float v[], uint8_t sz)
+float ArrayStats::min()
 {
 	float m = 0;
   for(int i = 0; i<sz; i++)
@@ -19,7 +35,7 @@ float ArrayStats::computeMin(float v[], uint8_t sz)
   return m;
 }
 
-float ArrayStats::computeMax(float v[], uint8_t sz)
+float ArrayStats::max()
 {
 	float m = 0;
   for(int i = 0; i<sz; i++)
@@ -31,7 +47,7 @@ float ArrayStats::computeMax(float v[], uint8_t sz)
 }
 
 // compute simple average from array of values
-float ArrayStats::computeAvg(float v[], uint8_t sz)
+float ArrayStats::avg()
 {
 	float sum = 0, avg;
   for(int i = 0; i<sz; i++)
@@ -43,7 +59,7 @@ float ArrayStats::computeAvg(float v[], uint8_t sz)
 
 /**
  * Simple c array math routine to compute:
- *  - min / max / mean
+ *  - min / max / avg
  *  - range (diff 1st to last element)
  *  - trend (count of ascending / descending values in sequence)
  *  - greatest diff between two elements (increase / decrease)
@@ -56,13 +72,13 @@ float ArrayStats::computeAvg(float v[], uint8_t sz)
  * @return void
  *
  */
-void ArrayStats::computeStats(float arr[], int sz, struct arrStat *result)
+void ArrayStats::stats(struct ArrStatsResult *result)
 {
 
 	// init result struct values
   result->min = 0;
   result->max = 0;
-  result->mean = 0;
+  result->avg = 0;
   result->incSeqCount = 0;
   result->decSeqCount = 0;
   result->incCount = 0;
@@ -71,12 +87,12 @@ void ArrayStats::computeStats(float arr[], int sz, struct arrStat *result)
   result->incMaxDiff = 0;
   result->decMaxDiff = 0;
 
-  result->min = computeMin(arr, sz);
-  result->max = computeMax(arr  , sz);
-  result->mean = computeAvg(arr, sz);
+  result->min = min();
+  result->max = max();
+  result->avg = avg();
   // tail = head - (sz -1)
   // if tail < 0, tail = sz - tail
-  result->diff = arr[sz-1] - arr[0]; // difference between last / first data points
+  result->diff = v[sz-1] - v[0]; // difference between last / first data points
 
   int period = 1;
 
@@ -88,8 +104,8 @@ void ArrayStats::computeStats(float arr[], int sz, struct arrStat *result)
 
   for(int i = sz; i > 1; i--)
   {
-    float curr = arr[sz - i + period];
-    float prev = arr[sz - i];
+    float curr = v[sz - i + period];
+    float prev = v[sz - i];
 
     // diff 1st to last only valid when arr pointer is at last position
     float diff = curr - prev;
@@ -138,24 +154,25 @@ void ArrayStats::computeStats(float arr[], int sz, struct arrStat *result)
 
 }
 
-void ArrayStats::print(float arr[], uint8_t sz, struct arrStat result)
-{
-	ArrayStats::printArr(arr, sz);
-	ArrayStats::printStats(result);
-}
 
-void ArrayStats::printArr(float arr[], uint8_t sz)
+void ArrayStats::printArray()
 {
-	for(int i=0; i<sz; i++)
+	printf("Array Size: %lu\n", sz);
+	printf("Array Index: %lu\n",idx);
+
+	for(unsigned long i=0; i<sz; i++)
 	{
-		Serial.print(i);
-		Serial.print("\t");
-		Serial.println(arr[i]);
+		printf("%lu \t %f\n", i, v[i]);
 	}
+
 }
 
+/*
 void ArrayStats::printStats(struct arrStat result)
 {
+	/*
+	Serial = &Serial;
+
 	Serial.println("Array Stats:");
 
 
@@ -176,3 +193,4 @@ void ArrayStats::printStats(struct arrStat result)
 
   Serial.println("");
 }
+	*/
