@@ -2,16 +2,23 @@ Arduino Array Stats
 
 Simple c++ class for Arduino compute array math for trend analysis.
 
+Designed to solve problem of maintaining statistics for sensor data sampled at second, minute and hour intervals.
+
+Similar to https://www.arduino.cc/reference/en/libraries/runningaverage/ with enhancements to answer questions 
+- were values rising / falling?  
+- by what magnitude?  
+- what was rate of change?
+
 Computes:
 
 - min / max / mean
 - range (diff 1st to last element)
 - trend (signed count of ascending / descending values in sequence)
-- greatest diff between two elements (increase / decrease)
-- count of consecutive (monotonic) sequence (increase / decrease)
-- culmulative count of incremental / decrementing sequences
+- greatest diff between two elements (magnitude increase / decrease)
+- count of consecutive (monotonic) sequence steps (increase / decrease)
+- culmulative count of incremental / decrementing steps in sequence
 
-In this version works only with array of floats
+Compatible with c++ and Arduino (ESP32) architectures.
 
 Useage:
   See examples/
