@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stddef.h>
-#include <assert.h>
+#include <math.h>
 
 #include "ArrayStats.h"
 
@@ -34,7 +34,7 @@ void ArrayStats::add(const float f)
 float ArrayStats::min()
 {
 	float m = 0;
-  for(int i = 0; i<_sz; i++)
+  for(unsigned long i = 0; i<_sz; i++)
   {
     m = ((i	 == 0) || (_v[i] < m)) ? _v[i] : m;
   }
@@ -44,7 +44,7 @@ float ArrayStats::min()
 float ArrayStats::max()
 {
 	float m = 0;
-  for(int i = 0; i<_sz; i++)
+  for(unsigned long  i = 0; i<_sz; i++)
   {
     m = (_v[i] > m) ? _v[i] : m;
   }
@@ -55,12 +55,26 @@ float ArrayStats::max()
 // compute simple average from array of values
 float ArrayStats::avg()
 {
-	float sum = 0, avg;
-  for(int i = 0; i<_sz; i++)
+	float sum = 0.0, avg;
+  for(unsigned long i = 0; i<_sz; i++)
   {
     sum += _v[i];
   }
   return avg = sum / _sz;
+}
+
+float ArrayStats::stdDev()
+{
+	float mean, stdDev = 0.0;
+
+	mean = avg();
+
+	for(unsigned long i = 0; i<_sz; i++)
+  {
+    stdDev += pow(_v[i] - mean, 2);
+  }
+
+	return sqrt(stdDev / _sz);
 }
 
 unsigned long ArrayStats::getIndex()
@@ -81,6 +95,7 @@ void ArrayStats::stats(struct ArrayStatsResult *result)
   result->min = 0;
   result->max = 0;
   result->avg = 0;
+	result->stdDev = stdDev();
   result->incSeqCount = 0;
   result->decSeqCount = 0;
   result->incCount = 0;
@@ -172,7 +187,6 @@ void ArrayStats::printArray()
 /*
 void ArrayStats::printStats(struct arrStat result)
 {
-	/*
 	Serial = &Serial;
 
 	Serial.println("Array Stats:");
@@ -195,4 +209,4 @@ void ArrayStats::printStats(struct arrStat result)
 
   Serial.println("");
 }
-	*/
+*/

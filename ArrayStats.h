@@ -29,6 +29,7 @@ struct ArrayStatsResult
     float min;
     float max;
     float avg;
+    float stdDev;
     int incCount;
     int decCount;
     int incSeqCount;
@@ -49,6 +50,7 @@ class ArrayStats {
       float min();
       float max();
       float avg();
+      float stdDev();
       void stats(struct ArrayStatsResult *result);
       unsigned long getIndex();
       bool isFull();
