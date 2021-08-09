@@ -9,18 +9,24 @@
 
 ArrayStats::ArrayStats() {}
 
-ArrayStats::ArrayStats(unsigned long s)
+ArrayStats::ArrayStats(const unsigned long s)
 {
-	sz = s;
-	v = new float[s];
+	_idx = 0;
+	_sz = s;
+	_v = (float*) malloc(_sz * sizeof(float));
 }
 
-void ArrayStats::add(float f)
+ArrayStats::~ArrayStats()
 {
-	v[idx++] = f;
-	if (idx == sz)
+  if (_v != NULL) free(_v);
+}
+
+void ArrayStats::add(const float f)
+{
+	_v[_idx++] = f;
+	if (_idx == _sz)
 	{
-		idx = 0;
+		_idx = 0;
 	}
 }
 
@@ -28,9 +34,9 @@ void ArrayStats::add(float f)
 float ArrayStats::min()
 {
 	float m = 0;
-  for(int i = 0; i<sz; i++)
+  for(int i = 0; i<_sz; i++)
   {
-    m = ((i	 == 0) || (v[i] < m)) ? v[i] : m;
+    m = ((i	 == 0) || (_v[i] < m)) ? _v[i] : m;
   }
   return m;
 }
@@ -38,9 +44,9 @@ float ArrayStats::min()
 float ArrayStats::max()
 {
 	float m = 0;
-  for(int i = 0; i<sz; i++)
+  for(int i = 0; i<_sz; i++)
   {
-    m = (v[i] > m) ? v[i] : m;
+    m = (_v[i] > m) ? _v[i] : m;
   }
   return m;
 
@@ -50,29 +56,25 @@ float ArrayStats::max()
 float ArrayStats::avg()
 {
 	float sum = 0, avg;
-  for(int i = 0; i<sz; i++)
+  for(int i = 0; i<_sz; i++)
   {
-    sum += v[i];
+    sum += _v[i];
   }
-  return avg = sum / sz;
+  return avg = sum / _sz;
 }
 
-/**
- * Simple c array math routine to compute:
- *  - min / max / avg
- *  - range (diff 1st to last element)
- *  - trend (count of ascending / descending values in sequence)
- *  - greatest diff between two elements (increase / decrease)
- *  - count of consecutive (monotonic) sequence (increase / decrease)
- *  - culmulative count of incremental / decrementing sequences
- *
- * @param float array
- * @param int sz number of elements
- * @param struct arraStat (pointer)
- * @return void
- *
- */
-void ArrayStats::stats(struct ArrStatsResult *result)
+unsigned long ArrayStats::getIndex()
+{
+	return _idx;
+}
+
+bool ArrayStats::isFull()
+{
+	return (_idx == _sz -1) ? true : false;
+}
+
+
+void ArrayStats::stats(struct ArrayStatsResult *result)
 {
 
 	// init result struct values
@@ -92,7 +94,7 @@ void ArrayStats::stats(struct ArrStatsResult *result)
   result->avg = avg();
   // tail = head - (sz -1)
   // if tail < 0, tail = sz - tail
-  result->diff = v[sz-1] - v[0]; // difference between last / first data points
+  result->diff = _v[_sz-1] - _v[0]; // difference between last / first data points
 
   int period = 1;
 
@@ -102,10 +104,10 @@ void ArrayStats::stats(struct ArrStatsResult *result)
   int incCumCount = 0;
   int decCumCount = 0;
 
-  for(int i = sz; i > 1; i--)
+  for(int i = _sz; i > 1; i--)
   {
-    float curr = v[sz - i + period];
-    float prev = v[sz - i];
+    float curr = _v[_sz - i + period];
+    float prev = _v[_sz - i];
 
     // diff 1st to last only valid when arr pointer is at last position
     float diff = curr - prev;
@@ -157,12 +159,12 @@ void ArrayStats::stats(struct ArrStatsResult *result)
 
 void ArrayStats::printArray()
 {
-	printf("Array Size: %lu\n", sz);
-	printf("Array Index: %lu\n",idx);
+	printf("Array Size: %lu\n", _sz);
+	printf("Array Index: %lu\n",_idx);
 
-	for(unsigned long i=0; i<sz; i++)
+	for(unsigned long i=0; i<_sz; i++)
 	{
-		printf("%lu \t %f\n", i, v[i]);
+		printf("%lu \t %f\n", i, _v[i]);
 	}
 
 }
