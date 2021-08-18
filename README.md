@@ -25,7 +25,9 @@ Compatible with c++ and Arduino (ESP32) architectures.
 Useage:
 
 examples/ArrayStats - example to maintain single n sized float array
+
 examples/ArrayStatsContainer - demonstrates populating n sized minute, hour & day sample arrays
+
 
 Example Output:
 
