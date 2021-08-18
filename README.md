@@ -1,13 +1,15 @@
 Arduino Array Stats
 
-Simple c++ class for Arduino compute array math for trend analysis.
+Simple c++ class for Arduino to compute array math for running trend analysis.
 
-Designed to solve problem of maintaining statistics for sensor data sampled at second, minute and hour intervals.
+Designed to solve problem of maintaining statistics for sensor data either a single n sized array or for data sampled in cyclic buffer at second, minute and hour intervals.
 
 Similar to https://www.arduino.cc/reference/en/libraries/runningaverage/ with enhancements to answer questions 
 - were values rising / falling?  
 - by what magnitude?  
 - what was rate of change?
+
+Also, includes a container wrapper class providing a simple API to maintain time delimited samples. 
 
 Computes:
 
@@ -21,7 +23,9 @@ Computes:
 Compatible with c++ and Arduino (ESP32) architectures.
 
 Useage:
-  See examples/
+
+examples/ArrayStats - example to maintain single n sized float array
+examples/ArrayStatsContainer - demonstrates populating n sized minute, hour & day sample arrays
 
 Example Output:
 
@@ -48,3 +52,4 @@ Example Output:
    Dec Seq Count: 0
    Inc Max Diff: 38.00
    Dec Max Diff: 0.00
+
